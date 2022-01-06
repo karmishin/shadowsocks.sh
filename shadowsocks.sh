@@ -24,7 +24,7 @@ main() {
 }
 
 prepare() {
-	if [ `id -u` -ne 0 ]; then
+	if [ $(id -u) -ne 0 ]; then
 		echo "This script must be run as root."
 		exit 1
 	fi
@@ -80,7 +80,7 @@ install_systemd_service() {
 }
 
 install_service() {
-	if [ `systemctl is-system-running` = "running" ]; then
+	if [ $(systemctl is-system-running) = "running" ]; then
 		echo "Installing systemd service at ${systemd_service_directory}/shadowsocks.service..."
 		install_systemd_service
 		echo "Starting the service..."
