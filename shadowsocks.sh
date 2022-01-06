@@ -72,7 +72,7 @@ install_systemd_service() {
 		Type=simple
 		DynamicUser=yes
 		ProtectHome=yes
-		ExecStart=${shadowsocks_directory}/ssserver -c ${shadowsocks_directory}/config.json --log-without-time
+		ExecStart=${shadowsocks_directory}/bin/ssserver -c ${shadowsocks_directory}/config.json --log-without-time
 
 		[Install]
 		WantedBy=multi-user.target
