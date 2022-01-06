@@ -22,10 +22,6 @@ prepare() {
 		exit 1
 	fi
 
-	if [ -f $tmp_directory/err.log ]; then
-		rm $tmp_directory/err.log || true
-	fi
-
 	mkdir -p $tmp_directory
 	mkdir -p $shadowsocks_directory
 }
@@ -33,8 +29,8 @@ prepare() {
 download() {
 	echo "Downloading shadowsocks-rust ${shadowsocks_version}..."
 
-	if ! wget $download_link -P $tmp_directory 2>> $tmp_directory/err.log; then
-		echo "Download failed. Check ${tmp_directory}/err.log for more information."
+	if ! wget $download_link -P $tmp_directory 2> $tmp_directory/wget.log; then
+		echo "Download failed. Check ${tmp_directory}/wget.log for more information."
 		exit 1
 	fi
 }
