@@ -95,20 +95,33 @@ install_service() {
 
 create_client_config() {
 	public_ip_address=$(wget -qO- https://v4.ident.me/)
+	client_config_path="${tmp_directory}/client.json"
+
+	cat > $client_config_path <<- EOF
+	{
+	    "server": "${public_ip_address}",
+	    "server_port": ${port},
+	    "password": "${password}",
+	    "method": "chacha20-ietf-poly1305"
+	}
+	EOF
+
+	ssurl=$($shadowsocks_directory/bin/ssurl --encode $client_config_path)
 
 	cat <<- EOF
 		--------------------------------------------
 		Shadowsocks has been successfully installed!
-		The client config is below:
+		--------------------------------------------
 
-		{
-		    "server": "${public_ip_address}",
-		    "server_port": ${port},
-		    "password": "${password}",
-		    "method": "chacha20-ietf-poly1305"
-		    "local_address": "127.0.0.1",
-		    "local_port": 1080
-		}
+		Server URL (SIP002):
+
+		${ssurl}
+
+		--------------------------------------------
+
+		JSON:
+
+		$(cat $client_config_path)
 
 	EOF
 }
