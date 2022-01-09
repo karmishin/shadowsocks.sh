@@ -2,7 +2,6 @@
 
 # Download options
 shadowsocks_version="1.12.5"
-download_link="https://github.com/shadowsocks/shadowsocks-rust/releases/download/v${shadowsocks_version}/shadowsocks-v${shadowsocks_version}.x86_64-unknown-linux-gnu.tar.xz"
 
 # Server configuration options
 port=$(shuf -i 1024-60999 -n 1 -z)
@@ -37,6 +36,17 @@ prepare() {
 download() {
 	echo "Downloading shadowsocks-rust ${shadowsocks_version}..."
 
+	ldd_version=$(ldd --version 2>&1 | head -n 1)
+	if [ "$(echo $ldd_version | grep -e GNU -e GLIBC)" ]; then
+		libc="gnu"
+	elif [ "$(echo $ldd_version | grep musl)" ]; then
+		libc="musl"
+	else
+		echo "Unknown libc implementation. Only glibc and musl are supported. Aborting..."
+		exit 1
+	fi
+
+	download_link="https://github.com/shadowsocks/shadowsocks-rust/releases/download/v${shadowsocks_version}/shadowsocks-v${shadowsocks_version}.x86_64-unknown-linux-${libc}.tar.xz"
 	if ! wget $download_link -P $tmp_directory 2> $tmp_directory/wget.log; then
 		echo "Download failed. Check ${tmp_directory}/wget.log for more information."
 		exit 1
@@ -46,7 +56,7 @@ download() {
 extract_files() {
 	echo "Extracting files..."
 
-	tar --extract -f $tmp_directory/shadowsocks-v${shadowsocks_version}.x86_64-unknown-linux-gnu.tar.xz \
+	tar --extract -f $tmp_directory/shadowsocks-v${shadowsocks_version}.x86_64-unknown-linux-${libc}.tar.xz \
 		--directory $shadowsocks_directory/bin
 }
 
@@ -129,7 +139,7 @@ create_client_config() {
 
 cleanup() {
 	echo "Cleaning up..."
-	rm $tmp_directory/shadowsocks-v${shadowsocks_version}.x86_64-unknown-linux-gnu.tar.xz
+	rm $tmp_directory/shadowsocks-v${shadowsocks_version}.x86_64-unknown-linux-${libc}.tar.xz
 }
 
 main
