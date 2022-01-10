@@ -23,8 +23,20 @@ main() {
 }
 
 prepare() {
+    # Check if running as root
 	if [ "$(id -u)" -ne 0 ]; then
 		echo "This script must be run as root."
+		exit 1
+	fi
+
+	# Try to detect a libc implementation
+	ldd_version=$(ldd --version 2>&1 | head -n 1)
+	if echo "$ldd_version" | grep -q -e GNU -e GLIBC; then
+		libc="gnu"
+	elif echo "$ldd_version" | grep -q musl; then
+		libc="musl"
+	else
+		echo "Unknown libc implementation. Only glibc and musl are supported. Aborting..."
 		exit 1
 	fi
 
@@ -35,16 +47,6 @@ prepare() {
 
 download() {
 	echo "Downloading shadowsocks-rust ${shadowsocks_version}..."
-
-	ldd_version=$(ldd --version 2>&1 | head -n 1)
-	if [ "$(echo $ldd_version | grep -e GNU -e GLIBC)" ]; then
-		libc="gnu"
-	elif [ "$(echo $ldd_version | grep musl)" ]; then
-		libc="musl"
-	else
-		echo "Unknown libc implementation. Only glibc and musl are supported. Aborting..."
-		exit 1
-	fi
 
 	download_link="https://github.com/shadowsocks/shadowsocks-rust/releases/download/v${shadowsocks_version}/shadowsocks-v${shadowsocks_version}.x86_64-unknown-linux-${libc}.tar.xz"
 	if ! wget $download_link -P $tmp_directory 2> $tmp_directory/wget.log; then
