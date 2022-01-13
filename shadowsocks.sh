@@ -10,6 +10,7 @@ password=$(tr -dc A-Za-z0-9 < /dev/urandom | head -c 60)
 # Directories
 shadowsocks_directory="/opt/shadowsocks"
 systemd_service_directory="/etc/systemd/system"
+openrc_script="/etc/init.d/shadowsocks"
 tmp_directory="/tmp/shadowsocks-sh"
 
 main() {
@@ -76,6 +77,8 @@ create_server_config() {
 }
 
 install_systemd_service() {
+    echo "Installing the systemd service at ${systemd_service_directory}/shadowsocks.service..."
+
 	cat > ${systemd_service_directory}/shadowsocks.service <<- EOF
 		[Unit]
 		Description=shadowsocks-rust server
@@ -90,19 +93,34 @@ install_systemd_service() {
 		[Install]
 		WantedBy=multi-user.target
 	EOF
+
+	systemctl daemon-reload
+	systemctl enable --now shadowsocks.service
+}
+
+install_openrc_service() {
+	cat > ${openrc_script} <<-EOF
+		#!/sbin/openrc-run
+
+		name="shadowsocks-rust server"
+		command="${shadowsocks_directory}/bin/ssserver"
+		command_args="-c ${shadowsocks_directory}/config.json --log-without-time"
+		command_background="yes"
+		pidfile="/var/run/shadowsocks.pid"
+	EOF
+
+	chmod +x ${openrc_script}
+	rc-update add shadowsocks default
+	rc-service shadowsocks start
 }
 
 install_service() {
-	if [ "$(systemctl is-system-running)" = "running" ]; then
-		echo "Installing systemd service at ${systemd_service_directory}/shadowsocks.service..."
+	if systemctl is-system-running; then
 		install_systemd_service
-		echo "Starting the service..."
-		systemctl daemon-reload
-		systemctl enable --now shadowsocks.service
+	elif rc-service --version; then
+		install_openrc_service
 	else
-		# Don't do anything if an alternative init system is used.
-		# TODO: add support for OpenRC
-		echo "Unable to detect init system. Skipping..."
+		echo "Unable to detect the init system. Skipping..."
 	fi
 }
 
