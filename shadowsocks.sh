@@ -59,8 +59,8 @@ download() {
 extract_files() {
 	echo "Extracting files..."
 
-	tar --extract -f $tmp_directory/shadowsocks-v${shadowsocks_version}.x86_64-unknown-linux-${libc}.tar.xz \
-		--directory $shadowsocks_directory/bin
+	tar --extract -f ${tmp_directory}/shadowsocks-v${shadowsocks_version}.x86_64-unknown-linux-${libc}.tar.xz \
+		--directory ${shadowsocks_directory}/bin
 }
 
 create_server_config() {
@@ -79,7 +79,7 @@ create_server_config() {
 install_systemd_service() {
     echo "Installing the systemd service at ${systemd_service_directory}/shadowsocks.service..."
 
-	cat > ${systemd_service_directory}/shadowsocks.service <<- EOF
+	cat > $systemd_service_directory/shadowsocks.service <<- EOF
 		[Unit]
 		Description=shadowsocks-rust server
 		After=network.target
@@ -99,7 +99,7 @@ install_systemd_service() {
 }
 
 install_openrc_service() {
-	cat > ${openrc_script} <<-EOF
+	cat > $openrc_script <<-EOF
 		#!/sbin/openrc-run
 
 		name="shadowsocks-rust server"
@@ -109,7 +109,7 @@ install_openrc_service() {
 		pidfile="/var/run/shadowsocks.pid"
 	EOF
 
-	chmod +x ${openrc_script}
+	chmod +x $openrc_script
 	rc-update add shadowsocks default
 	rc-service shadowsocks start
 }
