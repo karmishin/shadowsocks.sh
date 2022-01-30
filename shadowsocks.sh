@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 # Download options
-shadowsocks_version="1.12.5"
+shadowsocks_version="1.13.1"
 
 # Server configuration options
 port=$(shuf -i 1024-60999 -n 1 -z)
@@ -159,7 +159,7 @@ create_client_config() {
 
 cleanup() {
 	echo "Cleaning up..."
-	rm $tmp_directory/shadowsocks-v${shadowsocks_version}.x86_64-unknown-linux-${libc}.tar.xz
+	rm ${tmp_directory}/shadowsocks-v${shadowsocks_version}.x86_64-unknown-linux-${libc}.tar.xz
 }
 
 main
