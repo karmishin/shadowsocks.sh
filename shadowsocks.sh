@@ -6,6 +6,7 @@ shadowsocks_version="1.14.1"
 # Server configuration options
 port=$(shuf -i 1024-60999 -n 1 -z)
 password=$(tr -dc A-Za-z0-9 < /dev/urandom | head -c 60)
+method="aes-256-gcm"
 
 # Directories
 shadowsocks_directory="/opt/shadowsocks"
@@ -71,7 +72,7 @@ create_server_config() {
 		    "server": "::",
 		    "server_port": ${port},
 		    "password": "${password}",
-		    "method": "chacha20-ietf-poly1305"
+		    "method": "${method}"
 		}
 	EOF
 }
@@ -133,7 +134,7 @@ create_client_config() {
 	    "server": "${public_ip_address}",
 	    "server_port": ${port},
 	    "password": "${password}",
-	    "method": "chacha20-ietf-poly1305"
+	    "method": "${method}"
 	}
 	EOF
 
