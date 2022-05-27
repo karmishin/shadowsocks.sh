@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 # Download options
-shadowsocks_version="1.14.1"
+shadowsocks_version="1.14.3"
 
 # Server configuration options
 port=$(shuf -i 1024-60999 -n 1 -z)
