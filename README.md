@@ -1,12 +1,10 @@
 # shadowsocks.sh
 
-A POSIX-compliant shell script that configures a basic [shadowsocks-rust](https://github.com/shadowsocks/shadowsocks-rust) server and generates a client configuration file.
+A shell script that provisions a [shadowsocks-rust](https://github.com/shadowsocks/shadowsocks-rust) server and generates a client configuration file.
 
-**NOTE**: this script makes a GET request to ident.me to determine your server's public IP address. This may have privacy implications.
+## Quick start
 
-## Quick guide
-
-On your server:
+Execute the following commands on your server (as root):
 
 ```shell
 # download
@@ -18,6 +16,6 @@ less shadowsocks.sh
 # mark as executable
 chmod +x shadowsocks.sh
 
-# run (as root)
+# run
 ./shadowsocks.sh
 ```
