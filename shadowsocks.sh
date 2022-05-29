@@ -4,7 +4,7 @@
 shadowsocks_version="1.14.3"
 
 # Server configuration options
-port=$(shuf -i 1024-60999 -n 1 -z)
+port=$(shuf -i 1024-65535 -n 1 -z)
 password=$(tr -dc A-Za-z0-9 < /dev/urandom | head -c 60)
 method="aes-256-gcm"
 
@@ -43,7 +43,6 @@ prepare() {
 	fi
 
 	mkdir -p $tmp_directory
-	mkdir -p $shadowsocks_directory
 	mkdir -p $shadowsocks_directory/bin
 }
 
@@ -126,7 +125,7 @@ install_service() {
 }
 
 create_client_config() {
-	public_ip_address=$(wget -qO- https://v4.ident.me/)
+	public_ip_address=$(wget -4qO- https://v4.ident.me/)
 	client_config_path="${tmp_directory}/client.json"
 
 	cat > $client_config_path <<- EOF
@@ -134,7 +133,9 @@ create_client_config() {
 	    "server": "${public_ip_address}",
 	    "server_port": ${port},
 	    "password": "${password}",
-	    "method": "${method}"
+	    "method": "${method}",
+	    "local_address": "127.0.0.1",
+	    "local_port": 1080
 	}
 	EOF
 
