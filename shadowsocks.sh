@@ -4,7 +4,6 @@
 shadowsocks_version="1.14.3"
 
 # Server configuration options
-port=$(shuf -i 1024-65535 -n 1 -z)
 password=$(tr -dc A-Za-z0-9 < /dev/urandom | head -c 60)
 method="aes-256-gcm"
 
@@ -24,6 +23,20 @@ main() {
 	create_client_config
 }
 
+generate_port() {
+	port=$(shuf -i 1024-65535 -n 1 -z)
+
+	# Skip checking on minimal systems without ss (e.g. busybox)
+	if ! command -v ss > /dev/null 2>&1; then
+		return
+	fi
+
+	# Check if port is already in use
+	if ss -tln "( sport = :${port} )" | grep -q LISTEN; then
+		generate_port
+	fi
+}
+
 prepare() {
     # Check if running as root
 	if [ "$(id -u)" -ne 0 ]; then
@@ -41,6 +54,8 @@ prepare() {
 		echo "Unknown libc implementation. Only glibc and musl are supported. Aborting..."
 		exit 1
 	fi
+
+	generate_port
 
 	mkdir -p $tmp_directory
 	mkdir -p $shadowsocks_directory/bin
@@ -95,7 +110,7 @@ install_systemd_service() {
 	EOF
 
 	systemctl daemon-reload
-	systemctl enable --now shadowsocks.service
+	systemctl enable --now shadowsocks.service > /dev/null 2>&1
 }
 
 install_openrc_service() {
@@ -115,7 +130,7 @@ install_openrc_service() {
 }
 
 install_service() {
-	if systemctl is-system-running; then
+	if systemctl is-system-running > /dev/null 2>&1; then
 		install_systemd_service
 	elif rc-service --version; then
 		install_openrc_service
@@ -142,20 +157,19 @@ create_client_config() {
 	ssurl=$($shadowsocks_directory/bin/ssurl --encode $client_config_path)
 
 	cat <<- EOF
-		--------------------------------------------
-		Shadowsocks has been successfully installed!
-		--------------------------------------------
 
+		############################
+		# Installation successful! #
+		############################
+
+		Here's how you can connect:
+
+		IP: ${public_ip_address}
+		Port: ${port}
+		Password: ${password}
+		Encryption method: ${method}
 		Server URL (SIP002):
-
 		${ssurl}
-
-		--------------------------------------------
-
-		JSON:
-
-		$(cat $client_config_path)
-
 	EOF
 }
 
