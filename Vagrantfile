@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.provision "shell", path: "shadowsocks.sh"
+  config.vm.provision "shell", path: "shadowsocks.sh", args: "-c"
 
   config.vm.define "debian.shadowsocks" do |deb|
     deb.vm.hostname = "debian.shadowsocks"
@@ -14,4 +14,3 @@ Vagrant.configure("2") do |config|
     alp.vm.box = "generic/alpine316"
   end
 end
-
