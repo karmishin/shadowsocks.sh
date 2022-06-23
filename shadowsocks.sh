@@ -123,7 +123,7 @@ create_cloak_config() {
 			"BypassUID": [
 				"${cloak_uid}"
 			],
-			"RedirAddr": "yandex.ru",
+ 			"RedirAddr": "yastatic.net",
 			"PrivateKey": "${cloak_private_key}",
 			"DatabasePath": "/var/lib/private/cloak/userinfo.db",
 			"StreamTimeout": 300
