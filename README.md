@@ -1,10 +1,19 @@
 # shadowsocks.sh
 
-A shell script that provisions a [shadowsocks-rust](https://github.com/shadowsocks/shadowsocks-rust) server and generates a client configuration file.
+shadowsocks.sh is a shell script that installs and configures a [shadowsocks-rust](https://github.com/shadowsocks/shadowsocks-rust) server and (optionally) a [Cloak](https://github.com/cbeuw/Cloak) server.
+
+## Usage
+
+```
+./shadowsocks.sh [-c]
+
+Flags:
+  -c    Install Cloak (learn more at https://github.com/cbeuw/Cloak)
+```
 
 ## Quick start
 
-Execute the following commands on your server (as root):
+SSH into your server and run the following commands (as root):
 
 ```shell
 # download
@@ -16,6 +25,7 @@ less shadowsocks.sh
 # mark as executable
 chmod +x shadowsocks.sh
 
-# run
-./shadowsocks.sh
+# execute the actual script
+# remove the '-c' flag if you are not planning to use Cloak
+./shadowsocks.sh -c
 ```
