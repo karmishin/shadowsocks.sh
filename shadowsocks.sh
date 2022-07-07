@@ -31,7 +31,8 @@ generate_port() {
 
 	# Check if port is already in use
 	if ss -tln "( sport = :${port} )" | grep -q LISTEN; then
-		generate_port
+		echo "It appears that port ${port} is already used by another process. Aborting..."
+		exit 1
 	fi
 }
 
