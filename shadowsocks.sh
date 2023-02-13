@@ -132,6 +132,18 @@ create_cloak_config() {
 	EOF
 }
 
+fix_selinux() {
+	if ! command -v getenforce > /dev/null 2>&1; then
+		return
+	fi
+
+	if getenforce | grep -q "Enforcing"; then
+		echo "Fixing SELinux context..."
+		semanage fcontext -a -t bin_t $cloak_dir/bin/ck-server
+		restorecon -v $cloak_dir/bin/ck-server
+	fi
+}
+
 install_ss_systemd_service() {
 	cat > $systemd_dir/shadowsocks.service <<- EOF
 		[Unit]
@@ -297,6 +309,7 @@ create_ss_config
 if [ "$cloak" = true ] ; then
 	download_cloak
 	create_cloak_config
+	fix_selinux
 fi
 
 install_services
