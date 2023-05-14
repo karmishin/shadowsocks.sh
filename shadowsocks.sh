@@ -1,8 +1,8 @@
 #!/bin/sh -e
 
 # Download options
-shadowsocks_version="1.15.2"
-cloak_version="2.6.0"
+shadowsocks_version="1.15.3"
+cloak_version="2.7.0"
 
 # Server configuration options
 password=$(tr -dc A-Za-z0-9 < /dev/urandom | head -c 32)
