@@ -31,7 +31,7 @@ generate_port() {
 
 	# Check if port is already in use
 	if ss -tln "( sport = :${port} )" | grep -q LISTEN; then
-		echo "It appears that port ${port} is already used by another process. Aborting..."
+		echo "It appears that port ${port} is already used by another process. Running the script again might help. Aborting..."
 		exit 1
 	fi
 }
@@ -71,7 +71,7 @@ download_shadowsocks() {
 }
 
 download_cloak() {
-	echo "Downloading Cloak ${cloak_version}..."
+	echo "Downloading cloak ${cloak_version}..."
 
 	download_link="https://github.com/cbeuw/Cloak/releases/download/v${cloak_version}/ck-server-linux-amd64-v${cloak_version}"
 	if ! wget $download_link -P $tmp_dir 2>> $tmp_dir/wget.log; then
@@ -237,7 +237,7 @@ install_services() {
 }
 
 print_ss_config() {
-	public_ip_address=$(wget -4qO- https://am.i.mullvad.net/ip | tr -d "\n")
+	public_ip_address=$(wget -4qO- https://4.ident.me/ | tr -d "\n")
 	client_config_path="${tmp_dir}/client.json"
 
 	cat > $client_config_path <<- EOF
@@ -257,29 +257,40 @@ print_ss_config() {
 		# Installation successful! #
 		############################
 
-		SHADOWSOCKS configuration:
-
-		Server IP: ${public_ip_address}
-		Port: ${port}
-		Password: ${password}
-		Encryption method: ${method}
-		Server URL (SIP002):
-		${ssurl}
 	EOF
+
+	if [ -z "$cloak" ] ; then
+		cat <<- EOF
+			SHADOWSOCKS configuration:
+
+			Server IP: ${public_ip_address}
+			Port: ${port}
+			Password: ${password}
+			Encryption method: ${method}
+			Server URL (SIP002):
+			${ssurl}
+		EOF
+	fi
 }
 
 print_cloak_config() {
 	cat <<- EOF
+		SHADOWSOCKS configuration:
+
+		Password: ${password}
+		Encryption method: ${method}
 
 		CLOAK configuration:
 
+		Address: ${public_ip_address}
+		Port: 443
+		Encryption method: plain
+		Browser: chrome
 		Transport: direct
-		ProxyMethod: shadowsocks
-		EncryptionMethod: plain
+		Proxy method: shadowsocks
+		Server name: yandex.ru
 		UID: ${cloak_uid}
 		Public key: ${cloak_public_key}
-		Server name: yandex.ru
-		Browser signature: firefox
 		Stream timeout: 300
 	EOF
 }
