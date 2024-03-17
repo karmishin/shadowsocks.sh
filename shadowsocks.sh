@@ -288,7 +288,7 @@ print_cloak_config() {
 		Browser: chrome
 		Transport: direct
 		Proxy method: shadowsocks
-		Server name: yandex.ru
+		Server name: yastatic.net
 		UID: ${cloak_uid}
 		Public key: ${cloak_public_key}
 		Stream timeout: 300
