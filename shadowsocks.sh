@@ -112,22 +112,22 @@ create_cloak_config() {
 
 	cat > $cloak_dir/config.json <<- EOF
 		{
-			"ProxyBook": {
-				"shadowsocks": [
-					"tcp",
-					"127.0.0.1:${port}"
-				]
-			},
-			"BindAddr": [
-				":443"
-			],
-			"BypassUID": [
-				"${cloak_uid}"
-			],
- 			"RedirAddr": "yastatic.net",
-			"PrivateKey": "${cloak_private_key}",
-			"DatabasePath": "/var/lib/private/cloak/userinfo.db",
-			"StreamTimeout": 300
+		    "ProxyBook": {
+		        "shadowsocks": [
+		            "tcp",
+		            "127.0.0.1:${port}"
+		        ]
+		    },
+		    "BindAddr": [
+		        ":443"
+		    ],
+		    "BypassUID": [
+		        "${cloak_uid}"
+		    ],
+ 		    "RedirAddr": "yastatic.net",
+		    "PrivateKey": "${cloak_private_key}",
+		    "DatabasePath": "/var/lib/private/cloak/userinfo.db",
+		    "StreamTimeout": 300
 		}
 	EOF
 }
