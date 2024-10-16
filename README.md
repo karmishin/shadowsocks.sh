@@ -1,6 +1,14 @@
 # shadowsocks.sh
 
-shadowsocks.sh is a shell script that installs and configures a [shadowsocks-rust](https://github.com/shadowsocks/shadowsocks-rust) server and (optionally) a [Cloak](https://github.com/cbeuw/Cloak) server.
+shadowsocks.sh is a single-command shadowsocks installer.
+
+- sets up a [shadowsocks-rust](https://github.com/shadowsocks/shadowsocks-rust) server
+- optionally sets up a [cloak](https://github.com/cbeuw/Cloak) server for shadowsocks obfuscation
+- supports systemd and OpenRC
+
+## Requirements
+
+- `wget`
 
 ## Usage
 
@@ -8,7 +16,7 @@ shadowsocks.sh is a shell script that installs and configures a [shadowsocks-rus
 ./shadowsocks.sh [-c]
 
 Flags:
-  -c    Install Cloak (learn more at https://github.com/cbeuw/Cloak)
+  -c    Install Cloak (https://github.com/cbeuw/Cloak)
 ```
 
 ## Quick start
@@ -19,8 +27,7 @@ SSH into your server and run the following commands (as root):
 # download
 wget https://raw.githubusercontent.com/karmishin/shadowsocks.sh/master/shadowsocks.sh
 
-# check the contents
-less shadowsocks.sh
+# optionally examine the contents with your favorite text editor
 
 # mark as executable
 chmod +x shadowsocks.sh
