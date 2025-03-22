@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 # Download options
-shadowsocks_version="1.21.0"
+shadowsocks_version="1.23.0"
 cloak_version="2.10.0"
 
 # Server configuration options
