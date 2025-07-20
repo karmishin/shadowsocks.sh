@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 # Download options
-shadowsocks_version="1.23.0"
+shadowsocks_version="1.23.5"
 cloak_version="2.10.0"
 
 # Server configuration options
@@ -124,7 +124,7 @@ create_cloak_config() {
 		    "BypassUID": [
 		        "${cloak_uid}"
 		    ],
- 		    "RedirAddr": "yastatic.net",
+ 		    "RedirAddr": "ya.ru",
 		    "PrivateKey": "${cloak_private_key}",
 		    "DatabasePath": "/var/lib/private/cloak/userinfo.db",
 		    "StreamTimeout": 300
@@ -288,7 +288,7 @@ print_cloak_config() {
 		Browser: chrome
 		Transport: direct
 		Proxy method: shadowsocks
-		Server name: yastatic.net
+		Server name: ya.ru
 		UID: ${cloak_uid}
 		Public key: ${cloak_public_key}
 		Stream timeout: 300
