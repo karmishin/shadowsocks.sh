@@ -8,6 +8,8 @@ Some features:
 - optionally sets up a [cloak](https://github.com/cbeuw/Cloak) server for obfuscation (use the `-c` flag)
 - sets up systemd/openrc services depending on your init system, running as unprivileged `shadowsocks`/`cloak` users
 - opens the required port in firewalld or ufw if one of them is active
+- prints an `ss://` link for clients (with the Cloak plugin settings included when using `-c`), plus a QR code if `qrencode` is installed
+- keeps your credentials when run again, so it can be used to update the binaries
 - written in sh, designed to be portable and easy to audit
 - requires an internet connection to download ssserver and cloak binaries
 
@@ -20,36 +22,32 @@ Some features:
 - `sha256sum`, `od`, `mktemp`, `install`, `awk` (coreutils or busybox)
 - `useradd` or busybox `adduser`
 
-## Usage
-
-```
-./shadowsocks.sh [-c]
-
-Flags:
-  -c    Install Cloak (https://github.com/cbeuw/Cloak)
-```
-
 ## Quick start
 
-SSH into your server and run the following commands (as root).
+SSH into your server and run as root (remove `-c` if you don't want Cloak):
 
-1. Download the script:
+```shell
+wget -qO- https://raw.githubusercontent.com/karmishin/shadowsocks.sh/master/shadowsocks.sh | sh -s -- -c
+```
+
+If you'd rather read the script before running it:
 
 ```shell
 wget https://raw.githubusercontent.com/karmishin/shadowsocks.sh/master/shadowsocks.sh
+less shadowsocks.sh
+sh shadowsocks.sh -c
 ```
 
-2. Optionally examine the contents with your favorite text editor
-
-3. Mark as executable:
+## Usage
 
 ```
-chmod +x shadowsocks.sh
+shadowsocks.sh [-c] [-r] | -s | -u
+
+  -c    Also install Cloak (https://github.com/cbeuw/Cloak)
+  -r    Generate new credentials instead of keeping the existing ones
+  -s    Show the client configuration of the existing installation
+  -u    Uninstall
+  -h    Show this help
 ```
 
-4. Run the script:
-
-```
-# remove the '-c' flag if you are not planning to use Cloak
-./shadowsocks.sh -c
-```
+Running the script again updates the binaries and keeps the existing credentials, so clients keep working. Running it without `-c` on a server with Cloak removes Cloak.
