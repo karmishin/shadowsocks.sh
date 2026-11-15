@@ -24,14 +24,35 @@ jobs:
         os: [ubuntu-26.04, ubuntu-26.04-arm]
         mode: [shadowsocks, cloak]
     runs-on: ${{ matrix.os }}
+    env:
+      FLAGS: ${{ matrix.mode == 'cloak' && '-c' || '' }}
     steps:
       - uses: actions/checkout@v6
 
       - name: Run the installer
-        run: sudo sh shadowsocks.sh ${{ matrix.mode == 'cloak' && '-c' || '' }} | tee install.log
+        run: sudo sh shadowsocks.sh $FLAGS | tee install.log
 
       - name: Test the connection
         run: sh tests/connect.sh install.log
+
+      - name: Re-run and check the existing client config still works
+        run: |
+          sudo sh shadowsocks.sh $FLAGS | tee rerun.log
+          sh tests/connect.sh install.log
+
+      - name: Check the config printed by -s works
+        run: |
+          sudo sh shadowsocks.sh -s | tee show.log
+          sh tests/connect.sh show.log
+
+      - name: Uninstall and check nothing is left
+        run: |
+          sudo sh shadowsocks.sh -u
+          for path in /opt/shadowsocks /opt/cloak /var/lib/cloak \
+            /etc/systemd/system/shadowsocks.service /etc/systemd/system/cloak-server.service; do
+            if [ -e "$path" ]; then echo "$path is left"; exit 1; fi
+          done
+          if id shadowsocks || id cloak; then exit 1; fi
 
       - name: Show service logs
         if: failure()
