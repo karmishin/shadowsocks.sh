@@ -6,13 +6,19 @@ Some features:
 
 - sets up a [shadowsocks-rust](https://github.com/shadowsocks/shadowsocks-rust) server
 - optionally sets up a [cloak](https://github.com/cbeuw/Cloak) server for obfuscation (use the `-c` flag)
-- sets up systemd/openrc services depending on your init system
+- sets up systemd/openrc services depending on your init system, running as unprivileged `shadowsocks`/`cloak` users
+- opens the required port in firewalld or ufw if one of them is active
 - written in sh, designed to be portable and easy to audit
 - requires an internet connection to download ssserver and cloak binaries
 
 ## Requirements
 
+- an x86_64 or aarch64 Linux server with glibc or musl
+- systemd or OpenRC (0.45 or newer for Cloak)
 - `wget`
+- `tar` with xz support (e.g. the `xz-utils` package on Debian/Ubuntu)
+- `sha256sum`, `od`, `mktemp`, `install`, `awk` (coreutils or busybox)
+- `useradd` or busybox `adduser`
 
 ## Usage
 

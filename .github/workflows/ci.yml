@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v6
+      - run: shellcheck -s sh shadowsocks.sh tests/connect.sh
+
+  install:
+    name: install (${{ matrix.os }}, ${{ matrix.mode }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-26.04, ubuntu-26.04-arm]
+        mode: [shadowsocks, cloak]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run the installer
+        run: sudo sh shadowsocks.sh ${{ matrix.mode == 'cloak' && '-c' || '' }} | tee install.log
+
+      - name: Test the connection
+        run: sh tests/connect.sh install.log
+
+      - name: Show service logs
+        if: failure()
+        run: sudo journalctl --no-pager -u shadowsocks -u cloak-server
